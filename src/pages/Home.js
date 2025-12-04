@@ -7,10 +7,7 @@ function Home() {
   const [filter, setFilter] = useState("All");
   const [selectedMeal, setSelectedMeal] = useState(null);
 
-  useEffect(() => {
-    handleSearch();
-  }, []);
-
+  // 1. Defined handleSearch BEFORE useEffect to ensure it exists
   const handleSearch = async () => {
     if (filter !== "All") {
         const res = await api.filterByCategory(filter);
@@ -21,13 +18,19 @@ function Home() {
     }
   };
 
+  useEffect(() => {
+    handleSearch();
+    // 2. Added this comment to disable the warning. 
+    // This keeps the "run only on mount" behavior you want.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const addToCookbook = async (meal) => {
     const newRecipe = {
       title: meal.strMeal,
       image: meal.strMealThumb,
       category: meal.strCategory || "General",
       area: meal.strArea || "Unknown",
-      // FIX: Ensure .slice(0, 100) is REMOVED here so the full text is saved
       instructions: meal.strInstructions || "No instructions available", 
       rating: 0,
       notes: "",
