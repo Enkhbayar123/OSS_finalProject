@@ -1,17 +1,307 @@
-.app-container { font-family: Arial, sans-serif; text-align: center; }
-nav { background: #333; padding: 1rem; color: white; display: flex; justify-content: space-between; }
-nav a { color: white; margin: 0 10px; text-decoration: none; font-weight: bold; }
+:root {
+  --primary: #ff6b6b;       /* Warm coral/red for appetite */
+  --primary-hover: #ee5253;
+  --secondary: #48dbfb;
+  --dark: #2d3436;
+  --light: #f9f9f9;
+  --white: #ffffff;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
+  --radius: 12px;
+  --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-.page { padding: 20px; }
-.controls { margin-bottom: 20px; }
-.controls input, .controls select { padding: 8px; margin-right: 10px; }
+body {
+  background-color: var(--light);
+  color: var(--dark);
+  font-family: var(--font-main);
+}
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-.card { border: 1px solid #ddd; padding: 10px; border-radius: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
-.card img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; }
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
-button { background: #007bff; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; margin: 5px; }
-.delete-btn { background: #dc3545; }
+/* --- Navigation --- */
+nav {
+  background: var(--white);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
 
-.form-page form { display: flex; flex-direction: column; max-width: 300px; margin: 0 auto; }
-.form-page input, .form-page textarea { margin-bottom: 15px; padding: 8px; }
+nav h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+nav .links a {
+  color: var(--dark);
+  margin-left: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+nav .links a:hover {
+  color: var(--primary);
+}
+
+/* --- Layout & Controls --- */
+.page {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.controls {
+  margin-bottom: 30px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.controls input, .controls select {
+  padding: 10px 15px;
+  border: 2px solid #ddd;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.controls input:focus, .controls select:focus {
+  border-color: var(--primary);
+}
+
+/* --- Buttons --- */
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: var(--radius);
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.delete-btn {
+  background: #ff4757;
+}
+.delete-btn:hover {
+  background: #e04050;
+}
+
+/* --- Grid & Cards --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+  padding: 10px;
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.card img:hover {
+  opacity: 0.9;
+}
+
+.card h3 {
+  padding: 0 15px;
+  margin: 15px 0 10px;
+  font-size: 1.1rem;
+  color: var(--dark);
+}
+
+.card button {
+  margin: 15px;
+  margin-top: auto; /* Pushes button to bottom */
+}
+
+/* --- Modal Overlay & Content --- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: var(--white);
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  animation: slideUp 0.3s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #f1f2f6;
+  color: #333;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 20px;
+}
+
+.close-btn:hover {
+  background: #dfe4ea;
+  transform: none;
+}
+
+.modal-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+}
+
+.info-section {
+  background: #fff0f0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--primary);
+}
+
+.info-section p {
+  margin: 5px 0;
+}
+
+.instructions {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+/* --- Form & Edit Page Styles --- */
+
+.form-card {
+  max-width: 500px;
+  width: 100%;
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.form-card h2 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.styled-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #eee;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box; /* Ensures padding doesn't break width */
+  resize: vertical; /* Allows resizing only vertically for textarea */
+}
+
+.styled-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: #fffafa; /* Very light tint of primary color */
+}
+
+/* Button container in form */
+.form-card .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.secondary-btn {
+  background: #dfe6e9;
+  color: var(--dark);
+}
+
+.secondary-btn:hover {
+  background: #b2bec3;
+  transform: translateY(-1px);
+}

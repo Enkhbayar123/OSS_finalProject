@@ -22,13 +22,18 @@ function Cookbook() {
     }
   };
 
-  const closeModal = () => {
-    setSelectedMeal(null);
-  };
-
   return (
     <div className="page">
-      <h2>My Cookbook ({myRecipes.length})</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>
+        My Cookbook ({myRecipes.length})
+      </h2>
+      
+      {myRecipes.length === 0 && (
+        <p style={{ textAlign: 'center', color: '#777' }}>
+          No recipes saved yet. Go search for some!
+        </p>
+      )}
+
       <div className="grid">
         {myRecipes.map((item) => (
           <div key={item.id} className="card saved">
@@ -36,17 +41,22 @@ function Cookbook() {
               src={item.image} 
               alt={item.title} 
               onClick={() => setSelectedMeal(item)}
-              style={{ cursor: "pointer" }}
               title="Click to view details"
             />
             <h3>{item.title}</h3>
-            <p>Rating: {item.rating} / 5</p>
+            <div style={{ padding: '0 15px 10px', color: '#666' }}>
+                Rating: {item.rating} / 5 ⭐
+            </div>
             
-            <div className="actions">
-              <Link to={`/edit/${item.id}`}>
-                <button>Edit</button>
+            <div className="actions" style={{ padding: '15px', display: 'flex', gap: '10px' }}>
+              <Link to={`/edit/${item.id}`} style={{ flex: 1 }}>
+                <button style={{ width: '100%' }}>Edit</button>
               </Link>
-              <button onClick={() => handleDelete(item.id)} className="delete-btn">
+              <button 
+                onClick={() => handleDelete(item.id)} 
+                className="delete-btn" 
+                style={{ flex: 1 }}
+              >
                 Delete
               </button>
             </div>
@@ -55,17 +65,17 @@ function Cookbook() {
       </div>
 
       {selectedMeal && (
-        <div style={styles.overlay} onClick={closeModal}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <button style={styles.closeBtn} onClick={closeModal}>&times;</button>
+        <div className="modal-overlay" onClick={() => setSelectedMeal(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setSelectedMeal(null)}>&times;</button>
             <h2 style={{marginTop: 0}}>{selectedMeal.title}</h2>
             <img 
               src={selectedMeal.image} 
               alt={selectedMeal.title} 
-              style={styles.modalImage}
+              className="modal-image"
             />
             
-            <div style={styles.infoSection}>
+            <div className="info-section">
               <p><strong>Category:</strong> {selectedMeal.category || "General"}</p>
               <p><strong>Cuisine:</strong> {selectedMeal.area || "Unknown"}</p>
               <p><strong>Rating:</strong> {selectedMeal.rating} / 5 ⭐</p>
@@ -74,8 +84,8 @@ function Cookbook() {
               )}
             </div>
 
-            <h3>Instructions:</h3>
-            <p style={styles.instructions}>
+            <h3>Instructions</h3>
+            <p className="instructions">
               {selectedMeal.instructions || "No instructions available."}
             </p>
           </div>
@@ -84,37 +94,5 @@ function Cookbook() {
     </div>
   );
 }
-
-const styles = {
-  overlay: {
-    position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    display: "flex", justifyContent: "center", alignItems: "center",
-    zIndex: 1000,
-  },
-  modal: {
-    backgroundColor: "#fff", padding: "20px", borderRadius: "8px",
-    maxWidth: "600px", width: "90%", maxHeight: "80vh",
-    overflowY: "auto", position: "relative", textAlign: "left",
-  },
-  closeBtn: {
-    position: "absolute", top: "10px", right: "10px",
-    background: "#ff4444", color: "white", border: "none",
-    borderRadius: "50%", width: "30px", height: "30px",
-    cursor: "pointer", fontSize: "16px", lineHeight: "30px", padding: 0,
-  },
-  modalImage: {
-    width: "100%", height: "200px", objectFit: "cover",
-    borderRadius: "8px", marginBottom: "15px"
-  },
-  infoSection: {
-    backgroundColor: "#fff8dc", 
-    padding: "10px", borderRadius: "5px",
-    marginBottom: "15px", borderLeft: "4px solid #ffc107"
-  },
-  instructions: {
-    whiteSpace: "pre-wrap", lineHeight: "1.5", color: "#333"
-  }
-};
 
 export default Cookbook;
