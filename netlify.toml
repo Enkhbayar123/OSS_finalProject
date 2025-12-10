@@ -1,0 +1,10 @@
+[build]
+  # "CI=false" tells Netlify to ignore warnings (essential for React 19)
+  command = "CI=false npm run build"
+  publish = "build"
+
+# This block fixes the 404 error when you refresh a page
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
